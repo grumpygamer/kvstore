@@ -39,6 +39,8 @@ CREATE TABLE auth (
 );
 CREATE INDEX idx_key ON kv_store(key ASC);
 INSERT INTO auth (project,secret) VALUES ("my_project", "qskpchkqupdqydkz");
+PRAGMA journal_mode = WAL;
+PRAGMA synchronous = 1;
 .quit
 ```
 
