@@ -1,4 +1,4 @@
-# kvstore
+# KVStore
 Simple key/value store using PHP and SQLite.
 
 This is intended for a low to medium traffic website.  If you need to use it on a high traffic website, switching the MySQL or PostgreSQL would be preferred to SQLite.  
@@ -13,7 +13,7 @@ dec
 add
 ```
 
-## Creating the DB
+## Creating the database
 
 When creating the database make sure it is in a location where the web server has read/write access.
 
@@ -46,7 +46,7 @@ Most modern installations of PHP already have the SQLite extention installed. If
 
 Place the `kvstore.php` file where the web server has access.
 
-Copy `kvstore_inc.sample.php` to `kvstore_inc.php` and change `$DB_NAME = "some/path/kv.db"` to the location of the db file.
+Copy `kvstore_inc.sample.php` to `kvstore_inc.php` and change `$DB_NAME = "some/path/kv.db"` to the location of the database file.
 
 ## Testing
 
@@ -57,7 +57,7 @@ KVSTORE="https://example.com/kvstore.php?project=my_project&secret=qskpchkqupdqy
 curl -s -X POST -d "action=put" -d "key=games/favorite" -d "value=thimbleweedpark" $KVSTORE
 curl -s -X POST -d "action=put" -d "key=test" -d "value=1" $KVSTORE
 curl -s -X POST -d "action=inc" -d "key=test" $KVSTORE
-curl -s -X POST -d "action=get" -d "key=games/favorite" -d $KVSTORE
+curl -s -X POST -d "action=get" -d "key=games/favorite" $KVSTORE
 ```
 
 To check the database:
@@ -65,6 +65,7 @@ To check the database:
 ```
 sqlite3 some/path/kv.db
 
+SELECT * FROM auth
 SELECT * FROM kv_store
 .quit
 ```
