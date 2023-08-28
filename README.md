@@ -13,6 +13,8 @@ dec
 add
 ```
 
+KVStore fails silently in most situation unless the json param is passed.
+
 ## Creating the database
 
 When creating the database make sure it is in a location where the web server has read/write access.
@@ -50,7 +52,7 @@ Copy `kvstore_inc.sample.php` to `kvstore_inc.php` and change `$DB_NAME = "some/
 
 ## Testing
 
-Once install the key/value store can be tested with the following:
+Once installed the key/value store can be tested with the following:
 
 ```
 KVSTORE="https://example.com/kvstore.php?project=my_project&secret=qskpchkqupdqydkz"
@@ -58,9 +60,11 @@ curl -s -X POST -d "action=put" -d "key=games/favorite" -d "value=thimbleweedpar
 curl -s -X POST -d "action=put" -d "key=test" -d "value=1" $KVSTORE
 curl -s -X POST -d "action=inc" -d "key=test" $KVSTORE
 curl -s -X POST -d "action=get" -d "key=games/favorite" $KVSTORE
+curl -s -X POST -d "action=get" -d "key=games/favorite" -d "json=1" $KVSTORE
+curl -s -X POST -d "action=inc" -d "key=test" -d "json=1" $KVSTORE
 ```
 
-To check the database:
+To check the key/value database:
 
 ```
 sqlite3 some/path/kv.db
