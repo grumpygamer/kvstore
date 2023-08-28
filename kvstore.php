@@ -13,17 +13,17 @@ include "kvstore_inc.php";
 error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
 
 function fatal_error($text) {
- 	global $json_response;
-  error_log("ERROR: ".$text);
- 	if ($json_response) echo "{ \"error\": true }";
-  die;
+	global $json_response;
+	error_log("ERROR: ".$text);
+	if ($json_response) echo "{ \"error\": true }";
+	die;
 }
 
 function public_error($text) {
- 	global $json_response;
-  error_log("ERROR: ".$text);
- 	if ($json_response) echo "{ \"error\": \"".$text."\" }";
-  die;
+	global $json_response;
+	error_log("ERROR: ".$text);
+	if ($json_response) echo "{ \"error\": \"".$text."\" }";
+	die;
 }
 
 function getValue($db, $project, $key, $json=false) {
