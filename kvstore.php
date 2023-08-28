@@ -1,5 +1,13 @@
 <?php
 
+//
+// Copyright (c) 2023 Ron Gilbert
+//
+// You are free to use this in anyway to want just don't claim it is yours.
+//
+// If you found this useful you can express your appreciation by buying Thimbleweed Park.
+//
+
 include "kvstore_inc.php";
 
 error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
