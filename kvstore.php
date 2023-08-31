@@ -1,7 +1,7 @@
 <?php
 
 //
-// Copyright (c) 2023 Ron Gilbert
+// Copyright (c) 2023 Ron Gilbert (ron.gilbert@grumpygamer.com)
 //
 // You are free to use this in anyway to want just don't claim it is yours.
 //
