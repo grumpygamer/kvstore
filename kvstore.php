@@ -1,12 +1,29 @@
 <?php
 
 //
-// Copyright (c) 2023 Ron Gilbert
-//
-// You are free to use this in anyway to want just don't claim it is yours.
-//
 // If you found this useful you can express your appreciation by buying Thimbleweed Park.
 //
+// MIT License
+//
+// Copyright (c) 2023 Ron Gilbert <ron.gilbert@grumpygamer.com>
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 
 include "kvstore_inc.php";
 
@@ -61,6 +78,7 @@ function putValue($db, $project, $key, $value, $json=false) {
 
 function addValue($db, $project, $key, $value, $json=false) {
 	if (strlen($key) == 0) public_error("Bad key");
+	$db->exec("BEGIN");
 	$stmt = $db->prepare("SELECT * FROM `kv_store` WHERE `project` = ? AND `key` = ? ORDER BY `id` DESC LIMIT 1");
 	if (!$stmt) fatal_error($db->lastErrorMsg());
 	$stmt->bindParam(1, $project, SQLITE3_TEXT) || fatal_error($db->lastErrorMsg());
@@ -77,6 +95,7 @@ function addValue($db, $project, $key, $value, $json=false) {
 	$stmt->bindParam(3, $value, SQLITE3_TEXT) || fatal_error($db->lastErrorMsg());
 	$stmt->execute() || fatal_error($db->lastErrorMsg());
 	$stmt->close();
+	$db->exec("END");
 	if ($json) {
 		return json_encode([ 'key' => $key, 'value' => $value ], JSON_UNESCAPED_SLASHES);
 	} else {
@@ -90,6 +109,7 @@ if (isset($_REQUEST['project']) && isset($_REQUEST['secret']) && isset($_REQUEST
 	$project = $_REQUEST['project'];
 	$secret = $_REQUEST['secret'];
 	$action = $_REQUEST['action'];
+	$quiet = isset($_REQUEST['quiet'])?intval($_REQUEST['quiet']):false;
 
 	$db = new SQLite3($DB_NAME);
 	if (!$db) fatal_error("Can't open db: $DB_NAME");
@@ -108,33 +128,38 @@ if (isset($_REQUEST['project']) && isset($_REQUEST['secret']) && isset($_REQUEST
 
 	if ($action == "get") {
 		$key = $_REQUEST['key'];
-		echo getValue($db, $project, $key, $json_response);
+		$out = getValue($db, $project, $key, $json_response);
+		if (!$quiet) echo $out;
 		die;
 	}
 
 	if ($action == "put") {
 		$key = $_REQUEST['key'];
 		$value = $_REQUEST['value'];
-		echo putValue($db, $project, $key, $value, $json_response);
+		$out = putValue($db, $project, $key, $value, $json_response);
+		if (!$quiet) echo $out;
 		die;
 	}
 
 	if ($action == "inc") {
 		$key = $_REQUEST['key'];
-		echo addValue($db, $project, $key, 1, $json_response);
+		$out = addValue($db, $project, $key, 1, $json_response);
+		if (!$quiet) echo $out;
 		die;
 	}
 
 	if ($action == "dec") {
 		$key = $_REQUEST['key'];
-		echo addValue($db, $project, $key, -1, $json_response);
+		$out = addValue($db, $project, $key, -1, $json_response);
+		if (!$quiet) echo $out;
 		die;
 	}
 
 	if ($action == "add") {
 		$key = $_REQUEST['key'];
 		$value = $_REQUEST['value'];
-		echo addValue($db, $project, $key, $value, $json_response);
+		$out = addValue($db, $project, $key, $value, $json_response);
+		if (!$quiet) echo $out;
 		die;
 	}
 }
